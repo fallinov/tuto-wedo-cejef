@@ -123,9 +123,30 @@
             transform: scale(1.02);
             box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2);
         }
+        /* Focus visible amélioré */
+        a:focus-visible, button:focus-visible, input:focus-visible,
+        [role="button"]:focus-visible, summary:focus-visible {
+            outline: 2px solid #0F2A44;
+            outline-offset: 2px;
+            border-radius: 4px;
+        }
+        /* Respect des préférences de mouvement réduit */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+            html { scroll-behavior: auto; }
+        }
     </style>
 </head>
 <body class="bg-cejef-bg text-cejef-text">
+
+    <!-- Skip link pour accessibilité -->
+    <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-[100] focus:bg-cejef-primary focus:text-white focus:px-4 focus:py-2 focus:rounded-lg focus:outline-none">
+        Aller au contenu principal
+    </a>
 
     <!-- Lightbox modal -->
     <div id="lightbox" class="lightbox" role="dialog" aria-modal="true" aria-label="Image agrandie">
@@ -191,6 +212,9 @@
             });
         });
     </script>
+
+    <!-- Contenu principal -->
+    <main id="main-content">
 
     <!-- Hero -->
     <section class="bg-cejef-primary text-white py-16 text-center">
@@ -820,7 +844,7 @@
                 <details class="bg-white border border-gray-200 rounded-lg overflow-hidden group">
                     <summary class="px-4 py-3 cursor-pointer font-medium hover:bg-gray-50 flex justify-between items-center">
                         <span>Je ne vois pas ma réunion ?</span>
-                        <svg class="w-5 h-5 text-gray-400 transition-transform group-open:rotate-180" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                        <svg class="w-5 h-5 text-gray-500 transition-transform group-open:rotate-180" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
                     </summary>
                     <div class="px-4 pb-4 text-gray-600">
                         <p class="mb-2">Vérifiez que vous êtes bien membre de l'espace de travail correspondant. Contactez l'organisateur de la réunion si besoin.</p>
@@ -830,7 +854,7 @@
                 <details class="bg-white border border-gray-200 rounded-lg overflow-hidden group">
                     <summary class="px-4 py-3 cursor-pointer font-medium hover:bg-gray-50 flex justify-between items-center">
                         <span>Puis-je modifier l'ordre du jour ?</span>
-                        <svg class="w-5 h-5 text-gray-400 transition-transform group-open:rotate-180" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                        <svg class="w-5 h-5 text-gray-500 transition-transform group-open:rotate-180" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
                     </summary>
                     <div class="px-4 pb-4 text-gray-600">
                         <p class="mb-2">Oui, tant que l'ODJ n'est pas "validé" (étape 2). Après validation, il est en lecture seule.</p>
@@ -840,7 +864,7 @@
                 <details class="bg-white border border-gray-200 rounded-lg overflow-hidden group">
                     <summary class="px-4 py-3 cursor-pointer font-medium hover:bg-gray-50 flex justify-between items-center">
                         <span>Où vont les tâches créées en séance ?</span>
-                        <svg class="w-5 h-5 text-gray-400 transition-transform group-open:rotate-180" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                        <svg class="w-5 h-5 text-gray-500 transition-transform group-open:rotate-180" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
                     </summary>
                     <div class="px-4 pb-4 text-gray-600">
                         <p class="mb-2">Directement dans "Mes tâches" du responsable assigné + dans l'espace de travail de la réunion.</p>
@@ -850,7 +874,7 @@
                 <details class="bg-white border border-gray-200 rounded-lg overflow-hidden group">
                     <summary class="px-4 py-3 cursor-pointer font-medium hover:bg-gray-50 flex justify-between items-center">
                         <span>Comment retrouver une ancienne décision ?</span>
-                        <svg class="w-5 h-5 text-gray-400 transition-transform group-open:rotate-180" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                        <svg class="w-5 h-5 text-gray-500 transition-transform group-open:rotate-180" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
                     </summary>
                     <div class="px-4 pb-4 text-gray-600">
                         <p class="mb-2">Utilisez la recherche avec des mots-clés. WEDO cherche dans tous les PV et documents.</p>
@@ -860,6 +884,8 @@
             </div>
         </div>
     </section>
+
+    </main>
 
     <!-- Footer -->
     <footer class="bg-gray-800 text-white py-12">
