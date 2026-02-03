@@ -509,24 +509,78 @@
                 <p class="text-cejef-text"><strong>Rappel :</strong> 1 tâche = 1 responsable unique. Si plusieurs personnes doivent agir, créez des sous-tâches.</p>
             </div>
 
-            <h3 class="text-lg font-semibold mb-4">Marquer une tâche comme terminée</h3>
-            <div class="max-w-md mx-auto">
-                <div class="flex items-center gap-3 bg-white border border-gray-200 rounded-lg p-4 mb-2">
-                    <div class="w-6 h-6 border-2 border-gray-300 rounded flex items-center justify-center text-gray-400">☐</div>
-                    <div>
-                        <p class="font-medium">Faire la checklist de démarrage WEDO</p>
-                        <p class="text-sm text-gray-500">Moi · Aujourd'hui</p>
+            <h3 class="text-lg font-semibold mb-6 text-center">Marquer une tâche comme terminée</h3>
+            <div class="max-w-2xl mx-auto">
+                <div class="grid md:grid-cols-2 gap-4 items-center">
+                    <!-- Avant -->
+                    <div class="relative">
+                        <span class="absolute -top-3 left-4 bg-gray-100 text-gray-500 text-xs font-medium px-2 py-1 rounded">Avant</span>
+                        <div class="bg-white border-2 border-gray-200 rounded-xl p-5 shadow-sm">
+                            <div class="flex items-start gap-4">
+                                <div class="w-7 h-7 border-2 border-gray-300 rounded-md flex items-center justify-center flex-shrink-0 cursor-pointer hover:border-cejef-primary transition">
+                                </div>
+                                <div class="flex-1">
+                                    <p class="font-semibold text-cejef-text">Faire la checklist de démarrage WEDO</p>
+                                    <div class="flex items-center gap-2 mt-2 text-sm text-gray-500">
+                                        <span class="flex items-center gap-1">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                                            Moi
+                                        </span>
+                                        <span>·</span>
+                                        <span class="flex items-center gap-1">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                                            Aujourd'hui
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Flèche centrale -->
+                    <div class="hidden md:flex items-center justify-center absolute left-1/2 -translate-x-1/2">
+                        <div class="bg-cejef-primary text-white rounded-full p-2 shadow-lg">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                        </div>
+                    </div>
+                    <div class="flex md:hidden justify-center -my-2">
+                        <div class="bg-cejef-primary text-white rounded-full p-2 shadow-lg">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/></svg>
+                        </div>
+                    </div>
+
+                    <!-- Après -->
+                    <div class="relative">
+                        <span class="absolute -top-3 left-4 bg-green-100 text-green-700 text-xs font-medium px-2 py-1 rounded">Terminée</span>
+                        <div class="bg-green-50 border-2 border-green-300 rounded-xl p-5 shadow-sm">
+                            <div class="flex items-start gap-4">
+                                <div class="w-7 h-7 bg-green-500 rounded-md flex items-center justify-center flex-shrink-0">
+                                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
+                                </div>
+                                <div class="flex-1">
+                                    <p class="font-semibold text-gray-400 line-through">Faire la checklist de démarrage WEDO</p>
+                                    <div class="flex items-center gap-2 mt-2 text-sm text-green-600">
+                                        <span class="flex items-center gap-1">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                                            Moi
+                                        </span>
+                                        <span>·</span>
+                                        <span class="flex items-center gap-1">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                                            Terminée
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <p class="text-center text-gray-400 my-2">↓ Cliquer sur la case</p>
-                <div class="flex items-center gap-3 bg-white border border-cejef-primary rounded-lg p-4">
-                    <div class="w-6 h-6 bg-cejef-primary rounded flex items-center justify-center text-white">✓</div>
-                    <div>
-                        <p class="font-medium line-through text-gray-500">Faire la checklist de démarrage WEDO</p>
-                        <p class="text-sm text-gray-500">Moi · Terminée</p>
-                    </div>
+
+                <!-- Info notification -->
+                <div class="mt-6 flex items-center justify-center gap-2 text-sm text-gray-500 bg-gray-50 rounded-lg py-3 px-4">
+                    <svg class="w-5 h-5 text-cejef-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+                    <span>L'organisateur de la réunion est <strong>automatiquement notifié</strong></span>
                 </div>
-                <p class="text-center text-gray-500 text-sm mt-2">L'organisateur de la réunion est automatiquement notifié</p>
             </div>
         </div>
     </section>
