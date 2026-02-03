@@ -428,7 +428,7 @@
                         <tr>
                             <td class="px-4 py-3 w-12"><span class="text-cejef-primary font-bold text-sm">ABC</span></td>
                             <td class="px-4 py-3 font-medium">Équipes (MAJUSCULES)</td>
-                            <td class="px-4 py-3 text-gray-600">Dossiers regroupant les espaces (ex: CNS, GCN, COPIL, SFP)</td>
+                            <td class="px-4 py-3 text-gray-600">Dossiers regroupant les espaces (ex: SFP, COPIL, DIVTEC, GCN, ...)</td>
                         </tr>
                         <tr class="bg-gray-50">
                             <td class="px-4 py-3"><svg class="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="6"/></svg></td>
@@ -542,10 +542,9 @@
             </div>
 
             <div class="text-center mb-8">
-                <video autoplay loop muted playsinline class="rounded-xl shadow-lg border border-gray-200 max-w-full inline-block" width="840">
-                    <source src="img/odj-sections-thematiques.webm" type="video/webm">
-                    <img src="img/odj-sections-thematiques.gif" alt="Animation montrant la création de sections et thématiques">
-                </video>
+                <div class="zoomable-container">
+                    <img src="img/odj-sections-thematiques.gif" alt="Animation montrant la création de sections et thématiques" class="zoomable rounded-xl shadow-lg border border-gray-200 max-w-full" width="840">
+                </div>
                 <p class="text-gray-600 text-sm mt-2">Création de sections et thématiques dans l'ordre du jour</p>
             </div>
 
@@ -613,7 +612,7 @@
 
             <div class="bg-amber-50 border-l-4 border-amber-500 rounded-lg p-4 flex gap-3">
                 <svg class="w-6 h-6 text-amber-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
-                <p class="text-cejef-text"><strong>Astuce :</strong> Copiez-collez votre ODJ depuis Word ou Excel. WEDO détecte automatiquement la structure (numérotation, niveaux).</p>
+                <p class="text-cejef-text"><strong>Astuce :</strong> Copiez-collez votre ODJ depuis Word ou Excel dans le champ "+ Ajouter". WEDO détecte automatiquement la structure (numérotation, niveaux).</p>
             </div>
         </div>
     </section>
@@ -642,10 +641,9 @@
 
             <h3 class="text-lg font-semibold mb-4">Créer une tâche depuis une thématique</h3>
             <div class="text-center mb-8">
-                <video autoplay loop muted playsinline class="rounded-xl shadow-lg border border-gray-200 max-w-full inline-block" width="860">
-                    <source src="img/creer-tache-thematique.webm" type="video/webm">
-                    <img src="img/creer-tache-thematique.gif" alt="Animation montrant comment créer une tâche dans une thématique">
-                </video>
+                <div class="zoomable-container">
+                    <img src="img/creer-tache-thematique.gif" alt="Animation montrant comment créer une tâche dans une thématique" class="zoomable rounded-xl shadow-lg border border-gray-200 max-w-full" width="860">
+                </div>
                 <p class="text-gray-600 text-sm mt-2">Cliquez sur <strong>+</strong> puis <strong>Tâche</strong>, ou tapez <strong>/tâche</strong> directement</p>
             </div>
 
@@ -837,22 +835,13 @@
         const checklistCount = document.getElementById('checklist-count');
         const checklistSuccess = document.getElementById('checklist-success');
         const total = checklistItems.length;
+        const resetButton = document.getElementById('checklist-reset');
 
         // Load saved state
         checklistItems.forEach((item, index) => {
             const saved = localStorage.getItem('wedo-checklist-' + index);
             if (saved === 'true') item.checked = true;
         });
-        updateChecklistProgress();
-
-        checklistItems.forEach((item, index) => {
-            item.addEventListener('change', () => {
-                localStorage.setItem('wedo-checklist-' + index, item.checked);
-                updateChecklistProgress();
-            });
-        });
-
-        const resetButton = document.getElementById('checklist-reset');
 
         function updateChecklistProgress() {
             const checked = document.querySelectorAll('.checklist-item:checked').length;
@@ -874,6 +863,17 @@
                 checklistSuccess.classList.add('hidden');
             }
         }
+
+        // Initialize progress on load
+        updateChecklistProgress();
+
+        // Add change listeners
+        checklistItems.forEach((item, index) => {
+            item.addEventListener('change', () => {
+                localStorage.setItem('wedo-checklist-' + index, item.checked);
+                updateChecklistProgress();
+            });
+        });
 
         // Reset button functionality
         resetButton.addEventListener('click', () => {
