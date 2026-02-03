@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Guide de démarrage WEDO pour les collaborateurs du CEJEF. Apprenez à vous connecter, gérer vos réunions et vos tâches en 5 minutes.">
+    <title>WEDO - Guide de démarrage | CEJEF</title>
+    <!-- Favicons -->
+    <link rel="icon" type="image/svg+xml" href="img/favicon.svg">
+    <link rel="icon" type="image/png" sizes="32x32" href="img/favicon-32x32.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="img/apple-touch-icon.png">
+    <!-- Tailwind CSS avec configuration -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        // Palette CEJEF Institution Jura
+                        cejef: {
+                            primary: '#0F2A44',    // Bleu nuit institutionnel
+                            accent: '#C62828',     // Rouge jurassien (urgence)
+                            bg: '#F4F6F8',         // Gris clair fond
+                            text: '#1F2933',       // Gris anthracite texte
+                            muted: '#6B7280'       // Gris moyen secondaire
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+    <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"></noscript>
+    <style>
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Inter', sans-serif; }
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+        /* Progress bar animation */
+        .progress-bar { transition: width 0.3s ease-out; }
+        /* Active nav link */
+        .nav-link.active { color: #0F2A44; font-weight: 600; }
+        /* Placeholder image style */
+        .img-placeholder {
+            background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #64748b;
+            font-size: 0.875rem;
+            min-height: 200px;
+        }
+        /* Print styles */
+        @media print {
+            header, #back-to-top, .no-print { display: none !important; }
+            section { page-break-inside: avoid; }
+        }
+        /* Lightbox */
+        .lightbox {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 100;
+            background: rgba(0, 0, 0, 0.9);
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+        .lightbox.active { display: flex; }
+        .lightbox img {
+            max-width: 95%;
+            max-height: 90vh;
+            object-fit: contain;
+            border-radius: 0.5rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+        .lightbox-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            width: 3rem;
+            height: 3rem;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .lightbox-close:hover { transform: scale(1.1); }
+        .lightbox-caption {
+            position: absolute;
+            bottom: 1rem;
+            left: 50%;
+            transform: translateX(-50%);
+            color: white;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            max-width: 90%;
+            text-align: center;
+        }
+        /* Zoomable images */
+        .zoomable {
+            cursor: zoom-in;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .zoomable:hover {
+            transform: scale(1.02);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+<body class="bg-cejef-bg text-cejef-text">
+
+    <!-- Lightbox modal -->
+    <div id="lightbox" class="lightbox" role="dialog" aria-modal="true" aria-label="Image agrandie">
+        <button class="lightbox-close" aria-label="Fermer">
+            <svg class="w-6 h-6 text-gray-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+        </button>
+        <img id="lightbox-img" src="" alt="">
+        <div id="lightbox-caption" class="lightbox-caption"></div>
+    </div>
+
+    <!-- Progress bar -->
+    <div id="progress-container" class="fixed top-0 left-0 w-full h-1 bg-gray-200 z-[60]">
+        <div id="progress-bar" class="progress-bar h-full bg-cejef-primary w-0"></div>
+    </div>
+
+    <!-- Header -->
+    <header class="bg-white border-b border-gray-200 sticky top-1 z-50">
+        <div class="max-w-5xl mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <img src="img/logo-cejef.webp" alt="CEJEF" class="h-12" width="120" height="48">
+                <span class="text-cejef-muted font-medium pl-3 border-l-2 border-gray-200">Guide WEDO</span>
+            </div>
+            <nav class="hidden md:flex gap-5">
+                <a href="#videos" class="nav-link text-gray-600 hover:text-cejef-primary text-sm font-medium transition-colors">Vidéos</a>
+                <a href="#connexion" class="nav-link text-gray-600 hover:text-cejef-primary text-sm font-medium transition-colors">Connexion</a>
+                <a href="#navigation" class="nav-link text-gray-600 hover:text-cejef-primary text-sm font-medium transition-colors">Navigation</a>
+                <a href="#reunions" class="nav-link text-gray-600 hover:text-cejef-primary text-sm font-medium transition-colors">Réunions</a>
+                <a href="#taches" class="nav-link text-gray-600 hover:text-cejef-primary text-sm font-medium transition-colors">Tâches</a>
+                <a href="#checklist" class="nav-link text-gray-600 hover:text-cejef-primary text-sm font-medium transition-colors">Checklist</a>
+                <a href="#aide" class="nav-link text-gray-600 hover:text-cejef-primary text-sm font-medium transition-colors">Aide</a>
+            </nav>
+            <!-- Menu hamburger mobile -->
+            <button id="menu-toggle" class="md:hidden p-2 rounded-lg hover:bg-gray-100" aria-label="Ouvrir le menu" aria-expanded="false">
+                <svg class="w-6 h-6 text-cejef-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                </svg>
+            </button>
+        </div>
+        <!-- Menu mobile -->
+        <nav id="mobile-menu" class="hidden md:hidden border-t border-gray-200 px-6 py-4 space-y-3">
+            <a href="#videos" class="block text-gray-600 hover:text-cejef-primary font-medium">Vidéos</a>
+            <a href="#connexion" class="block text-gray-600 hover:text-cejef-primary font-medium">Connexion</a>
+            <a href="#navigation" class="block text-gray-600 hover:text-cejef-primary font-medium">Navigation</a>
+            <a href="#reunions" class="block text-gray-600 hover:text-cejef-primary font-medium">Réunions</a>
+            <a href="#taches" class="block text-gray-600 hover:text-cejef-primary font-medium">Tâches</a>
+            <a href="#checklist" class="block text-gray-600 hover:text-cejef-primary font-medium">Checklist</a>
+            <a href="#aide" class="block text-gray-600 hover:text-cejef-primary font-medium">Aide</a>
+        </nav>
+    </header>
+    <script>
+        const menuToggle = document.getElementById('menu-toggle');
+        const mobileMenu = document.getElementById('mobile-menu');
+        menuToggle.addEventListener('click', () => {
+            const isOpen = mobileMenu.classList.toggle('hidden');
+            menuToggle.setAttribute('aria-expanded', !isOpen);
+        });
+        // Fermer le menu au clic sur un lien
+        mobileMenu.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+                menuToggle.setAttribute('aria-expanded', 'false');
+            });
+        });
+    </script>
+
+    <!-- Hero -->
+    <section class="bg-cejef-primary text-white py-16 text-center">
+        <div class="max-w-5xl mx-auto px-6">
+            <h1 class="text-4xl font-bold mb-2">Bienvenue sur WEDO</h1>
+            <p class="text-xl opacity-90 mb-1">Guide de démarrage pour les collaborateurs CEJEF</p>
+            <p class="opacity-80 mb-8">Découvrez WEDO en <strong>5 minutes</strong> et maîtrisez l'essentiel</p>
+            <a href="https://cejef.wedo.swiss/" target="_blank" rel="noopener noreferrer"
+               class="inline-flex items-center gap-2 bg-white text-cejef-primary px-6 py-3 rounded-lg font-medium hover:bg-gray-100 transition">
+                <svg class="w-5 h-5" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                Accéder à WEDO CEJEF
+                <span class="sr-only">(s'ouvre dans un nouvel onglet)</span>
+            </a>
+        </div>
+    </section>
+
+    <!-- Vidéos -->
+    <section id="videos" class="py-16 bg-white border-t-4 border-cejef-primary">
+        <div class="max-w-5xl mx-auto px-6">
+            <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                <span class="flex items-center justify-center w-10 h-10 bg-cejef-primary text-white rounded-full text-lg font-bold">1</span>
+                Regarder les vidéos
+                <span class="text-sm font-normal text-gray-500 bg-gray-100 px-2 py-1 rounded">3-4 min</span>
+            </h2>
+            <p class="mb-6">Visionnez ces 2 courtes vidéos <strong>dans l'ordre</strong> pour comprendre les concepts clés :</p>
+
+            <div class="grid md:grid-cols-2 gap-6 mb-8">
+                <!-- Vidéo 1 -->
+                <div class="bg-white rounded-xl p-6 shadow-md relative border-l-4 border-cejef-primary hover:shadow-lg transition">
+                    <div class="absolute top-4 right-4 w-8 h-8 bg-cejef-primary text-white rounded-full flex items-center justify-center font-bold">1</div>
+                    <h3 class="text-lg font-semibold mb-2">Gestion des tâches</h3>
+                    <p class="text-gray-600 mb-3">Espaces de travail, attribution des tâches, suivi, priorisation</p>
+                    <p class="text-gray-500 text-sm flex items-center gap-1 mb-4">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        ~1 min 20
+                    </p>
+                    <a href="https://www.youtube.com/watch?v=aoMPmSdChc0&list=PLOuOn1XUIt9IZn-J433RKOtRYUnRazehs" target="_blank" rel="noopener noreferrer"
+                       class="inline-flex items-center gap-2 bg-cejef-primary text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-cejef-text transition">
+                        <svg class="w-4 h-4" aria-hidden="true" fill="currentColor" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+                        Voir la vidéo
+                        <span class="sr-only">(s'ouvre dans un nouvel onglet)</span>
+                    </a>
+                </div>
+                <!-- Vidéo 2 -->
+                <div class="bg-white rounded-xl p-6 shadow-md relative border-l-4 border-cejef-primary hover:shadow-lg transition">
+                    <div class="absolute top-4 right-4 w-8 h-8 bg-cejef-primary text-white rounded-full flex items-center justify-center font-bold">2</div>
+                    <h3 class="text-lg font-semibold mb-2">Gestion des réunions</h3>
+                    <p class="text-gray-600 mb-3">ODJ collaboratif, PV en temps réel, lien tâches ↔ réunions</p>
+                    <p class="text-gray-500 text-sm flex items-center gap-1 mb-4">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        ~2 min
+                    </p>
+                    <a href="https://www.youtube.com/watch?v=tnl3-zLuITo&list=PLOuOn1XUIt9IZn-J433RKOtRYUnRazehs&index=3" target="_blank" rel="noopener noreferrer"
+                       class="inline-flex items-center gap-2 bg-cejef-primary text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-cejef-text transition">
+                        <svg class="w-4 h-4" aria-hidden="true" fill="currentColor" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+                        Voir la vidéo
+                        <span class="sr-only">(s'ouvre dans un nouvel onglet)</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Connexion -->
+    <section id="connexion" class="py-16 bg-gray-50">
+        <div class="max-w-5xl mx-auto px-6">
+            <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                <span class="flex items-center justify-center w-10 h-10 bg-cejef-primary text-white rounded-full text-lg font-bold">2</span>
+                Se connecter à WEDO CEJEF
+            </h2>
+
+            <div class="space-y-4 mb-8">
+                <div class="flex items-start gap-4">
+                    <div class="w-8 h-8 bg-cejef-primary text-white rounded-full flex items-center justify-center font-bold flex-shrink-0">1</div>
+                    <div>
+                        <h4 class="font-semibold">Ouvrir l'URL</h4>
+                        <p class="text-gray-600">Accédez à <a href="https://cejef.wedo.swiss/" target="_blank" rel="noopener noreferrer" class="text-cejef-primary hover:underline">cejef.wedo.swiss</a></p>
+                    </div>
+                </div>
+                <div class="flex items-start gap-4">
+                    <div class="w-8 h-8 bg-cejef-primary text-white rounded-full flex items-center justify-center font-bold flex-shrink-0">2</div>
+                    <div>
+                        <h4 class="font-semibold">Se connecter</h4>
+                        <p class="text-gray-600">Avec l'email sur lequel vous avez reçu l'invitation WEDO</p>
+                        <p class="text-sm text-gray-500 mt-1">Pas reçu d'invitation ? Contactez <a href="mailto:steve.fallet@jura.ch" class="text-cejef-primary hover:underline">Steve Fallet</a></p>
+                    </div>
+                </div>
+                <div class="flex items-start gap-4">
+                    <div class="w-8 h-8 bg-cejef-primary text-white rounded-full flex items-center justify-center font-bold flex-shrink-0">3</div>
+                    <div>
+                        <h4 class="font-semibold">Page d'accueil</h4>
+                        <p class="text-gray-600">Vous arrivez sur <strong>"Mes tâches"</strong></p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center">
+                <img src="img/mes-taches-saisie.png" alt="Vue Mes tâches montrant l'interface WEDO avec la saisie rapide de tâches" class="zoomable rounded-xl shadow-lg border border-gray-200 max-w-full inline-block" loading="lazy" width="860" height="485">
+                <p class="text-gray-600 text-sm mt-2">Après connexion, vous arrivez sur "Mes tâches"</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Navigation -->
+    <section id="navigation" class="py-16 bg-white">
+        <div class="max-w-5xl mx-auto px-6">
+            <div class="flex justify-between items-start mb-6">
+                <h2 class="text-2xl font-bold flex items-center gap-3">
+                    <span class="flex items-center justify-center w-10 h-10 bg-cejef-primary text-white rounded-full text-lg font-bold">3</span>
+                    Naviguer dans l'interface
+                </h2>
+                <a href="https://help.wedo.com/fr/collections/8723-espaces-de-travail" target="_blank" rel="noopener noreferrer" class="text-sm text-cejef-primary hover:underline flex items-center gap-1">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                    Espaces de travail
+                </a>
+            </div>
+
+            <h3 class="text-lg font-semibold mb-4">Menu principal (à gauche)</h3>
+
+            <div class="overflow-x-auto mb-8">
+                <table class="w-full bg-white rounded-lg shadow-sm">
+                    <thead class="bg-gray-100">
+                        <tr>
+                            <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700">Icône</th>
+                            <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700">Section</th>
+                            <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700">Description</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-200">
+                        <tr>
+                            <td class="px-4 py-3"><svg class="w-5 h-5 text-cejef-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg></td>
+                            <td class="px-4 py-3 font-medium">Recherche</td>
+                            <td class="px-4 py-3 text-gray-600">Chercher partout (tâches, PV, fichiers)</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-3"><svg class="w-5 h-5 text-cejef-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"/></svg></td>
+                            <td class="px-4 py-3 font-medium">Inbox</td>
+                            <td class="px-4 py-3 text-gray-600">Notifications et mentions</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-3"><svg class="w-5 h-5 text-cejef-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg></td>
+                            <td class="px-4 py-3 font-medium">Mes tâches</td>
+                            <td class="px-4 py-3 text-gray-600">Toutes vos tâches (page d'accueil)</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-3"><svg class="w-5 h-5 text-cejef-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg></td>
+                            <td class="px-4 py-3 font-medium">Réunions</td>
+                            <td class="px-4 py-3 text-gray-600">Vos ordres du jour et PV</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-3"><svg class="w-5 h-5 text-cejef-primary" fill="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/></svg></td>
+                            <td class="px-4 py-3 font-medium">Espaces de travail</td>
+                            <td class="px-4 py-3 text-gray-600">Vos projets et séances (tâches + réunions)</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="text-center mb-8">
+                <img src="img/menu-navigation.png" alt="Interface WEDO montrant le menu principal à gauche et les espaces de travail organisés par équipes" class="zoomable rounded-xl shadow-lg border border-gray-200 max-w-full inline-block" loading="lazy" width="860">
+                <p class="text-gray-600 text-sm mt-2">Menu principal et espaces de travail — notez les puces de couleur et les équipes en majuscules</p>
+            </div>
+
+            <h3 class="text-lg font-semibold mb-4">Trouver une réunion</h3>
+            <div class="text-center">
+                <img src="img/trouver-reunion.png" alt="Interface WEDO montrant comment accéder aux réunions : cliquer sur Réunions dans le menu puis sélectionner la séance" class="zoomable rounded-xl shadow-lg border border-gray-200 max-w-full inline-block" loading="lazy" width="860">
+                <p class="text-gray-600 text-sm mt-2">Cliquer sur <strong>Réunions</strong> dans le menu, puis sélectionner la séance souhaitée</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Réunions -->
+    <section id="reunions" class="py-16 bg-gray-50">
+        <div class="max-w-5xl mx-auto px-6">
+            <div class="flex justify-between items-start mb-6">
+                <h2 class="text-2xl font-bold flex items-center gap-3">
+                    <span class="flex items-center justify-center w-10 h-10 bg-cejef-primary text-white rounded-full text-lg font-bold">4</span>
+                    L'ordre du jour
+                </h2>
+                <div class="flex gap-3 text-sm">
+                    <a href="https://help.wedo.com/fr/collections/8832-reunions-ordre-du-jour" target="_blank" rel="noopener noreferrer" class="text-cejef-primary hover:underline flex items-center gap-1">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                        Ordre du jour
+                    </a>
+                    <a href="https://help.wedo.com/fr/collections/8834-reunions-thematique" target="_blank" rel="noopener noreferrer" class="text-cejef-primary hover:underline flex items-center gap-1">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                        Thématiques
+                    </a>
+                </div>
+            </div>
+
+            <h3 class="text-lg font-semibold mb-4">Structure de l'ODJ</h3>
+            <div class="bg-white rounded-xl p-6 mb-8 border border-gray-200">
+                <div class="bg-cejef-primary/10 border-l-4 border-cejef-primary p-4 rounded mb-3">
+                    <strong class="text-cejef-text">Sections</strong> <span class="text-cejef-muted">= titres numérotés (ex: "1. Salutations")</span>
+                </div>
+                <div class="ml-6 text-cejef-muted mb-2">↳</div>
+                <div class="bg-cejef-bg border-l-4 border-cejef-muted p-4 rounded ml-6">
+                    <strong class="text-cejef-text">Thématiques</strong> <span class="text-cejef-muted">= points avec contenu</span>
+                    <ul class="mt-2 text-cejef-muted text-sm list-disc list-inside">
+                        <li>Présentateur</li>
+                        <li>Durée estimée</li>
+                        <li>Description</li>
+                        <li>Fichiers joints</li>
+                        <li>Commentaires</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="text-center mb-8">
+                <img src="img/odj-sections-thematiques.gif" alt="Animation montrant la création de sections et thématiques dans un ordre du jour WEDO" class="zoomable rounded-xl shadow-lg border border-gray-200 max-w-full inline-block" loading="lazy" width="840" height="481">
+                <p class="text-gray-600 text-sm mt-2">Création de sections et thématiques dans l'ordre du jour</p>
+            </div>
+
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-semibold">Les 5 étapes d'une réunion</h3>
+                <a href="https://help.wedo.com/fr/articles/40340-les-5-etapes-dune-reunion" target="_blank" rel="noopener noreferrer" class="text-sm text-cejef-primary hover:underline">
+                    En savoir plus →
+                </a>
+            </div>
+            <div class="flex flex-wrap justify-between gap-4 mb-8 relative">
+                <div class="hidden md:block absolute top-4 left-0 right-0 h-0.5 bg-gray-200 -z-10"></div>
+                <div class="flex flex-col items-center text-center">
+                    <div class="w-8 h-8 bg-gray-200 text-gray-600 rounded-full flex items-center justify-center font-bold mb-2">1</div>
+                    <p class="font-medium text-sm">Préparation</p>
+                    <p class="text-xs text-gray-500">ODJ modifiable</p>
+                </div>
+                <div class="flex flex-col items-center text-center">
+                    <div class="w-8 h-8 bg-gray-200 text-gray-600 rounded-full flex items-center justify-center font-bold mb-2">2</div>
+                    <p class="font-medium text-sm">ODJ validé</p>
+                    <p class="text-xs text-gray-500">Lecture seule</p>
+                </div>
+                <div class="flex flex-col items-center text-center">
+                    <div class="w-8 h-8 bg-cejef-primary text-white rounded-full flex items-center justify-center font-bold mb-2">3</div>
+                    <p class="font-medium text-sm">En cours</p>
+                    <p class="text-xs text-gray-500">PV temps réel</p>
+                </div>
+                <div class="flex flex-col items-center text-center">
+                    <div class="w-8 h-8 bg-gray-200 text-gray-600 rounded-full flex items-center justify-center font-bold mb-2">4</div>
+                    <p class="font-medium text-sm">Relecture</p>
+                    <p class="text-xs text-gray-500">Corrections</p>
+                </div>
+                <div class="flex flex-col items-center text-center">
+                    <div class="w-8 h-8 bg-gray-200 text-gray-600 rounded-full flex items-center justify-center font-bold mb-2">5</div>
+                    <p class="font-medium text-sm">Verrouillé</p>
+                    <p class="text-xs text-gray-500">Archivé</p>
+                </div>
+            </div>
+
+            <div class="text-center mb-8">
+                <img src="img/5-etapes-reunion.png" alt="Interface WEDO montrant les 5 étapes d'une réunion avec le menu déroulant de changement d'étape" class="zoomable rounded-xl shadow-lg border border-gray-200 max-w-full inline-block" loading="lazy" width="860">
+                <p class="text-gray-600 text-sm mt-2">Changement d'étape via le menu déroulant</p>
+            </div>
+
+            <h3 class="text-lg font-semibold mb-4">Ajouter un point à l'ordre du jour</h3>
+            <div class="space-y-3 mb-8">
+                <div class="flex items-center gap-3">
+                    <div class="w-7 h-7 bg-cejef-primary text-white rounded-full flex items-center justify-center text-sm font-bold">1</div>
+                    <p>Ouvrir la réunion concernée</p>
+                </div>
+                <div class="flex items-center gap-3">
+                    <div class="w-7 h-7 bg-cejef-primary text-white rounded-full flex items-center justify-center text-sm font-bold">2</div>
+                    <p>Cliquer sur <strong>"+ Ajouter"</strong> à l'endroit souhaité</p>
+                </div>
+                <div class="flex items-center gap-3">
+                    <div class="w-7 h-7 bg-cejef-primary text-white rounded-full flex items-center justify-center text-sm font-bold">3</div>
+                    <p>Saisir le titre, présentateur, durée</p>
+                </div>
+                <div class="flex items-center gap-3">
+                    <div class="w-7 h-7 bg-cejef-primary text-white rounded-full flex items-center justify-center text-sm font-bold">4</div>
+                    <p>Joindre des fichiers si nécessaire</p>
+                </div>
+            </div>
+
+            <div class="bg-cejef-bg border-l-4 border-cejef-primary rounded-lg p-4 flex gap-3">
+                <svg class="w-6 h-6 text-cejef-primary flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                <p class="text-cejef-text"><strong>Astuce :</strong> Copiez-collez votre ODJ depuis Word ou Excel. WEDO détecte automatiquement la structure (numérotation, niveaux).</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tâches -->
+    <section id="taches" class="py-16 bg-white">
+        <div class="max-w-5xl mx-auto px-6">
+            <div class="flex justify-between items-start mb-6">
+                <h2 class="text-2xl font-bold flex items-center gap-3">
+                    <span class="flex items-center justify-center w-10 h-10 bg-cejef-primary text-white rounded-full text-lg font-bold">5</span>
+                    Gérer les tâches
+                </h2>
+                <a href="https://help.wedo.com/fr/collections/8717-taches" target="_blank" rel="noopener noreferrer" class="text-sm text-cejef-primary hover:underline flex items-center gap-1">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                    25 articles sur les tâches
+                </a>
+            </div>
+
+            <div class="bg-cejef-primary text-white p-6 rounded-xl mb-8">
+                <h3 class="text-lg font-semibold flex items-center gap-2 mb-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                    Le point clé de WEDO
+                </h3>
+                <p class="opacity-95">Les tâches créées en réunion apparaissent <strong>automatiquement</strong> dans "Mes tâches" du responsable assigné.</p>
+            </div>
+
+            <h3 class="text-lg font-semibold mb-4">Créer une tâche depuis une thématique</h3>
+            <div class="text-center mb-8">
+                <img src="img/creer-tache-thematique.gif" alt="Animation montrant comment créer une tâche dans une thématique avec le bouton + ou la commande /" class="zoomable rounded-xl shadow-lg border border-gray-200 max-w-full inline-block" loading="lazy" width="860">
+                <p class="text-gray-600 text-sm mt-2">Cliquez sur <strong>+</strong> puis <strong>Tâche</strong>, ou tapez <strong>/tâche</strong> directement</p>
+            </div>
+
+            <div class="bg-cejef-bg border-l-4 border-amber-500 rounded-lg p-4 flex gap-3 mb-8">
+                <svg class="w-6 h-6 text-amber-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                <p class="text-cejef-text"><strong>Rappel :</strong> 1 tâche = 1 responsable unique. Si plusieurs personnes doivent agir, créez des sous-tâches.</p>
+            </div>
+
+            <h3 class="text-lg font-semibold mb-4">Marquer une tâche comme terminée</h3>
+            <div class="max-w-md mx-auto">
+                <div class="flex items-center gap-3 bg-white border border-gray-200 rounded-lg p-4 mb-2">
+                    <div class="w-6 h-6 border-2 border-gray-300 rounded flex items-center justify-center text-gray-400">☐</div>
+                    <div>
+                        <p class="font-medium">Faire la checklist de démarrage WEDO</p>
+                        <p class="text-sm text-gray-500">Moi · Aujourd'hui</p>
+                    </div>
+                </div>
+                <p class="text-center text-gray-400 my-2">↓ Cliquer sur la case</p>
+                <div class="flex items-center gap-3 bg-white border border-cejef-primary rounded-lg p-4">
+                    <div class="w-6 h-6 bg-cejef-primary rounded flex items-center justify-center text-white">✓</div>
+                    <div>
+                        <p class="font-medium line-through text-gray-500">Faire la checklist de démarrage WEDO</p>
+                        <p class="text-sm text-gray-500">Moi · Terminée</p>
+                    </div>
+                </div>
+                <p class="text-center text-gray-500 text-sm mt-2">L'organisateur de la réunion est automatiquement notifié</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Règles d'or -->
+    <section class="py-10 bg-cejef-primary text-white">
+        <div class="max-w-5xl mx-auto px-6">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-xl font-bold flex items-center gap-2">
+                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                    Les 4 règles d'or
+                </h2>
+                <a href="https://help.wedo.com/fr/collections/8714-premiers-pas" target="_blank" rel="noopener noreferrer" class="text-sm text-white/80 hover:text-white underline">
+                    Guide complet →
+                </a>
+            </div>
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="bg-white/10 backdrop-blur rounded-xl p-4 border border-white/20">
+                    <div class="text-3xl font-bold text-white/30 mb-2">01</div>
+                    <p class="font-semibold text-lg mb-1">1 tâche = 1 responsable</p>
+                    <p class="text-sm text-white/70">Utilisez les sous-tâches pour répartir le travail</p>
+                </div>
+                <div class="bg-white/10 backdrop-blur rounded-xl p-4 border border-white/20">
+                    <div class="text-3xl font-bold text-white/30 mb-2">02</div>
+                    <p class="font-semibold text-lg mb-1">1 projet = 1 espace</p>
+                    <p class="text-sm text-white/70">Créez un espace dédié, pas une tâche avec sous-tâches</p>
+                </div>
+                <div class="bg-white/10 backdrop-blur rounded-xl p-4 border border-white/20">
+                    <div class="text-3xl font-bold text-white/30 mb-2">03</div>
+                    <p class="font-semibold text-lg mb-1">1 séance = 1 espace</p>
+                    <p class="text-sm text-white/70">Chaque réunion récurrente a son propre espace</p>
+                </div>
+                <div class="bg-white/10 backdrop-blur rounded-xl p-4 border border-white/20">
+                    <div class="text-3xl font-bold text-white/30 mb-2">04</div>
+                    <p class="font-semibold text-lg mb-1">Max 3 niveaux</p>
+                    <p class="text-sm text-white/70">Sous-tâches : 5 possibles, 3 recommandés</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Checklist -->
+    <section id="checklist" class="py-16 bg-gray-50">
+        <div class="max-w-5xl mx-auto px-6">
+            <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                <span class="flex items-center justify-center w-10 h-10 bg-green-600 text-white rounded-full text-lg font-bold">✓</span>
+                Checklist de démarrage
+            </h2>
+
+            <p class="text-gray-600 mb-6">Cochez les étapes au fur et à mesure pour valider votre prise en main de WEDO.</p>
+
+            <div class="bg-white rounded-xl border border-gray-200 divide-y divide-gray-200" id="checklist-container">
+                <label class="flex items-center gap-4 p-4 hover:bg-gray-50 cursor-pointer">
+                    <input type="checkbox" class="checklist-item w-5 h-5 rounded border-gray-300 text-cejef-primary focus:ring-cejef-primary">
+                    <span class="flex-1">
+                        <strong class="block">Regarder les 2 vidéos</strong>
+                        <span class="text-sm text-gray-500">~3-4 minutes au total</span>
+                    </span>
+                </label>
+                <label class="flex items-center gap-4 p-4 hover:bg-gray-50 cursor-pointer">
+                    <input type="checkbox" class="checklist-item w-5 h-5 rounded border-gray-300 text-cejef-primary focus:ring-cejef-primary">
+                    <span class="flex-1">
+                        <strong class="block">Se connecter à cejef.wedo.swiss</strong>
+                        <span class="text-sm text-gray-500">Avec votre email professionnel</span>
+                    </span>
+                </label>
+                <label class="flex items-center gap-4 p-4 hover:bg-gray-50 cursor-pointer">
+                    <input type="checkbox" class="checklist-item w-5 h-5 rounded border-gray-300 text-cejef-primary focus:ring-cejef-primary">
+                    <span class="flex-1">
+                        <strong class="block">Explorer "Mes tâches"</strong>
+                        <span class="text-sm text-gray-500">Votre page d'accueil personnelle</span>
+                    </span>
+                </label>
+                <label class="flex items-center gap-4 p-4 hover:bg-gray-50 cursor-pointer">
+                    <input type="checkbox" class="checklist-item w-5 h-5 rounded border-gray-300 text-cejef-primary focus:ring-cejef-primary">
+                    <span class="flex-1">
+                        <strong class="block">Créer une tâche</strong>
+                        <span class="text-sm text-gray-500">"Faire la checklist de démarrage WEDO"</span>
+                    </span>
+                </label>
+                <label class="flex items-center gap-4 p-4 hover:bg-gray-50 cursor-pointer">
+                    <input type="checkbox" class="checklist-item w-5 h-5 rounded border-gray-300 text-cejef-primary focus:ring-cejef-primary">
+                    <span class="flex-1">
+                        <strong class="block">Trouver votre première réunion</strong>
+                        <span class="text-sm text-gray-500">Dans le menu "Réunions"</span>
+                    </span>
+                </label>
+                <label class="flex items-center gap-4 p-4 hover:bg-gray-50 cursor-pointer">
+                    <input type="checkbox" class="checklist-item w-5 h-5 rounded border-gray-300 text-cejef-primary focus:ring-cejef-primary">
+                    <span class="flex-1">
+                        <strong class="block">Consulter un ordre du jour</strong>
+                        <span class="text-sm text-gray-500">Sections et thématiques</span>
+                    </span>
+                </label>
+                <label class="flex items-center gap-4 p-4 hover:bg-gray-50 cursor-pointer">
+                    <input type="checkbox" class="checklist-item w-5 h-5 rounded border-gray-300 text-cejef-primary focus:ring-cejef-primary">
+                    <span class="flex-1">
+                        <strong class="block">Terminer une tâche</strong>
+                        <span class="text-sm text-gray-500">Terminer la tâche "Faire la checklist de démarrage WEDO"</span>
+                    </span>
+                </label>
+            </div>
+
+            <div id="checklist-progress" class="mt-4 flex items-center gap-3">
+                <div class="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden">
+                    <div id="checklist-progress-bar" class="h-full bg-green-600 transition-all duration-300" style="width: 0%"></div>
+                </div>
+                <span id="checklist-count" class="text-sm font-medium text-gray-600">0/7</span>
+            </div>
+
+            <div id="checklist-success" class="hidden mt-6 bg-green-50 border border-green-200 rounded-lg p-4 text-center">
+                <p class="text-green-800 font-medium">🎉 Bravo ! Vous maîtrisez les bases de WEDO !</p>
+            </div>
+        </div>
+    </section>
+    <script>
+        // Checklist logic
+        const checklistItems = document.querySelectorAll('.checklist-item');
+        const progressBarChecklist = document.getElementById('checklist-progress-bar');
+        const checklistCount = document.getElementById('checklist-count');
+        const checklistSuccess = document.getElementById('checklist-success');
+        const total = checklistItems.length;
+
+        // Load saved state
+        checklistItems.forEach((item, index) => {
+            const saved = localStorage.getItem('wedo-checklist-' + index);
+            if (saved === 'true') item.checked = true;
+        });
+        updateChecklistProgress();
+
+        checklistItems.forEach((item, index) => {
+            item.addEventListener('change', () => {
+                localStorage.setItem('wedo-checklist-' + index, item.checked);
+                updateChecklistProgress();
+            });
+        });
+
+        function updateChecklistProgress() {
+            const checked = document.querySelectorAll('.checklist-item:checked').length;
+            const percent = (checked / total) * 100;
+            progressBarChecklist.style.width = percent + '%';
+            checklistCount.textContent = checked + '/' + total;
+            if (checked === total) {
+                checklistSuccess.classList.remove('hidden');
+            } else {
+                checklistSuccess.classList.add('hidden');
+            }
+        }
+    </script>
+
+    <!-- Aide -->
+    <section id="aide" class="py-16 bg-white">
+        <div class="max-w-5xl mx-auto px-6">
+            <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                <span class="flex items-center justify-center w-10 h-10 bg-cejef-primary text-white rounded-full text-lg font-bold">6</span>
+                Ressources d'aide
+            </h2>
+
+            <div class="grid md:grid-cols-3 gap-4 mb-8">
+                <a href="https://help.wedo.com/fr" target="_blank" rel="noopener noreferrer" class="bg-white border border-gray-200 rounded-xl p-6 text-center hover:border-cejef-primary hover:shadow-lg transition group">
+                    <div class="w-14 h-14 bg-cejef-bg text-cejef-primary rounded-full flex items-center justify-center mx-auto mb-3 group-hover:bg-cejef-primary group-hover:text-white transition">
+                        <svg class="w-7 h-7" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+                    </div>
+                    <h4 class="font-semibold mb-1 text-cejef-text">Centre d'aide</h4>
+                    <p class="text-sm text-cejef-muted">400+ articles et tutoriels</p>
+                    <span class="sr-only">(s'ouvre dans un nouvel onglet)</span>
+                </a>
+                <a href="https://www.youtube.com/@WEDO-CH-FR" target="_blank" rel="noopener noreferrer" class="bg-white border border-gray-200 rounded-xl p-6 text-center hover:border-cejef-primary hover:shadow-lg transition group">
+                    <div class="w-14 h-14 bg-cejef-bg text-cejef-primary rounded-full flex items-center justify-center mx-auto mb-3 group-hover:bg-cejef-primary group-hover:text-white transition">
+                        <svg class="w-7 h-7" aria-hidden="true" fill="currentColor" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+                    </div>
+                    <h4 class="font-semibold mb-1 text-cejef-text">Chaîne YouTube</h4>
+                    <p class="text-sm text-cejef-muted">Vidéos et webinaires</p>
+                    <span class="sr-only">(s'ouvre dans un nouvel onglet)</span>
+                </a>
+                <a href="https://cejef.wedo.swiss/" target="_blank" rel="noopener noreferrer" class="bg-white border border-gray-200 rounded-xl p-6 text-center hover:border-cejef-primary hover:shadow-lg transition group">
+                    <div class="w-14 h-14 bg-cejef-bg text-cejef-primary rounded-full flex items-center justify-center mx-auto mb-3 group-hover:bg-cejef-primary group-hover:text-white transition">
+                        <svg class="w-7 h-7" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+                    </div>
+                    <h4 class="font-semibold mb-1 text-cejef-text">Chat support</h4>
+                    <p class="text-sm text-cejef-muted">Réponse en &lt; 5 min</p>
+                    <span class="sr-only">(s'ouvre dans un nouvel onglet)</span>
+                </a>
+            </div>
+
+            <h3 class="text-lg font-semibold mb-4">FAQ rapide</h3>
+            <div class="space-y-2">
+                <details class="bg-white border border-gray-200 rounded-lg overflow-hidden group">
+                    <summary class="px-4 py-3 cursor-pointer font-medium hover:bg-gray-50 flex justify-between items-center">
+                        <span>Je ne vois pas ma réunion ?</span>
+                        <svg class="w-5 h-5 text-gray-400 transition-transform group-open:rotate-180" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                    </summary>
+                    <div class="px-4 pb-4 text-gray-600">
+                        <p class="mb-2">Vérifiez que vous êtes bien membre de l'espace de travail correspondant. Contactez l'organisateur de la réunion si besoin.</p>
+                        <a href="https://help.wedo.com/fr/articles/40309-comment-acceder-a-ses-reunions" target="_blank" rel="noopener noreferrer" class="text-cejef-primary hover:underline text-sm">→ Accéder à ses réunions</a>
+                    </div>
+                </details>
+                <details class="bg-white border border-gray-200 rounded-lg overflow-hidden group">
+                    <summary class="px-4 py-3 cursor-pointer font-medium hover:bg-gray-50 flex justify-between items-center">
+                        <span>Puis-je modifier l'ordre du jour ?</span>
+                        <svg class="w-5 h-5 text-gray-400 transition-transform group-open:rotate-180" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                    </summary>
+                    <div class="px-4 pb-4 text-gray-600">
+                        <p class="mb-2">Oui, tant que l'ODJ n'est pas "validé" (étape 2). Après validation, il est en lecture seule.</p>
+                        <a href="https://help.wedo.com/fr/articles/40340-les-5-etapes-dune-reunion" target="_blank" rel="noopener noreferrer" class="text-cejef-primary hover:underline text-sm">→ Les 5 étapes d'une réunion</a>
+                    </div>
+                </details>
+                <details class="bg-white border border-gray-200 rounded-lg overflow-hidden group">
+                    <summary class="px-4 py-3 cursor-pointer font-medium hover:bg-gray-50 flex justify-between items-center">
+                        <span>Où vont les tâches créées en séance ?</span>
+                        <svg class="w-5 h-5 text-gray-400 transition-transform group-open:rotate-180" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                    </summary>
+                    <div class="px-4 pb-4 text-gray-600">
+                        <p class="mb-2">Directement dans "Mes tâches" du responsable assigné + dans l'espace de travail de la réunion.</p>
+                        <a href="https://help.wedo.com/fr/articles/40357-comment-creer-une-tache-depuis-une-reunion" target="_blank" rel="noopener noreferrer" class="text-cejef-primary hover:underline text-sm">→ Créer une tâche depuis une réunion</a>
+                    </div>
+                </details>
+                <details class="bg-white border border-gray-200 rounded-lg overflow-hidden group">
+                    <summary class="px-4 py-3 cursor-pointer font-medium hover:bg-gray-50 flex justify-between items-center">
+                        <span>Comment retrouver une ancienne décision ?</span>
+                        <svg class="w-5 h-5 text-gray-400 transition-transform group-open:rotate-180" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                    </summary>
+                    <div class="px-4 pb-4 text-gray-600">
+                        <p class="mb-2">Utilisez la recherche avec des mots-clés. WEDO cherche dans tous les PV et documents.</p>
+                        <a href="https://help.wedo.com/fr/articles/40293-comment-utiliser-la-fonction-de-recherche" target="_blank" rel="noopener noreferrer" class="text-cejef-primary hover:underline text-sm">→ Utiliser la recherche</a>
+                    </div>
+                </details>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-12">
+        <div class="max-w-5xl mx-auto px-6">
+            <div class="flex flex-col md:flex-row justify-between gap-8 mb-8">
+                <div>
+                    <p class="font-semibold mb-2">Contact</p>
+                    <p class="text-gray-300">Steve Fallet<br>
+                    <a href="mailto:steve.fallet@jura.ch" class="text-gray-300 hover:text-white">steve.fallet@jura.ch</a></p>
+                </div>
+                <div>
+                    <p class="font-semibold mb-2">Liens utiles</p>
+                    <div class="flex flex-col gap-1">
+                        <a href="https://cejef.wedo.swiss/" target="_blank" rel="noopener noreferrer" class="text-gray-300 hover:text-white">WEDO CEJEF</a>
+                        <a href="https://help.wedo.com/fr" target="_blank" rel="noopener noreferrer" class="text-gray-300 hover:text-white">Centre d'aide</a>
+                        <a href="https://www.youtube.com/@WEDO-CH-FR" target="_blank" rel="noopener noreferrer" class="text-gray-300 hover:text-white">YouTube WEDO</a>
+                    </div>
+                </div>
+            </div>
+            <div class="border-t border-gray-700 pt-6 text-center text-gray-400 text-sm">
+                <p>CEJEF · Centre Numérique (CNS)</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bouton retour en haut -->
+    <a href="#" id="back-to-top"
+       class="fixed bottom-6 right-6 bg-cejef-primary text-white p-3 rounded-full shadow-lg hover:bg-cejef-text transition-all opacity-0 pointer-events-none"
+       aria-label="Retour en haut de page">
+        <svg class="w-5 h-5" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"/>
+        </svg>
+    </a>
+    <script>
+        const backToTop = document.getElementById('back-to-top');
+        const progressBar = document.getElementById('progress-bar');
+        const sections = document.querySelectorAll('section[id]');
+        const navLinks = document.querySelectorAll('.nav-link');
+
+        window.addEventListener('scroll', () => {
+            // Back to top button
+            if (window.scrollY > 300) {
+                backToTop.classList.remove('opacity-0', 'pointer-events-none');
+                backToTop.classList.add('opacity-100');
+            } else {
+                backToTop.classList.add('opacity-0', 'pointer-events-none');
+                backToTop.classList.remove('opacity-100');
+            }
+
+            // Progress bar
+            const scrollTop = window.scrollY;
+            const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+            const scrollPercent = (scrollTop / docHeight) * 100;
+            progressBar.style.width = scrollPercent + '%';
+
+            // Active nav link
+            let currentSection = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop - 100;
+                if (scrollTop >= sectionTop) {
+                    currentSection = section.getAttribute('id');
+                }
+            });
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === '#' + currentSection) {
+                    link.classList.add('active');
+                }
+            });
+        });
+
+        // Lightbox functionality
+        const lightbox = document.getElementById('lightbox');
+        const lightboxImg = document.getElementById('lightbox-img');
+        const lightboxCaption = document.getElementById('lightbox-caption');
+        const lightboxClose = document.querySelector('.lightbox-close');
+        const zoomableImages = document.querySelectorAll('.zoomable');
+
+        zoomableImages.forEach(img => {
+            img.addEventListener('click', () => {
+                lightboxImg.src = img.src;
+                lightboxImg.alt = img.alt;
+                // Get caption from next sibling paragraph if exists
+                const caption = img.parentElement.querySelector('p');
+                lightboxCaption.textContent = caption ? caption.textContent : img.alt;
+                lightbox.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            });
+        });
+
+        function closeLightbox() {
+            lightbox.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        lightboxClose.addEventListener('click', closeLightbox);
+        lightbox.addEventListener('click', (e) => {
+            if (e.target === lightbox) closeLightbox();
+        });
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && lightbox.classList.contains('active')) {
+                closeLightbox();
+            }
+        });
+    </script>
+
+</body>
+</html>

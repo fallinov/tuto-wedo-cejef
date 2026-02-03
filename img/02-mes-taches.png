@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" fill="none">
+  <rect width="800" height="450" fill="#f3f4f6"/>
+  <rect x="100" y="100" width="600" height="250" rx="8" fill="#e5e7eb"/>
+  <circle cx="400" cy="200" r="40" fill="#d1d5db"/>
+  <path d="M385 200L395 210L415 190" stroke="#9ca3af" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="400" y="280" font-family="Inter, Arial, sans-serif" font-size="16" fill="#6b7280" text-anchor="middle">Capture d'écran à ajouter</text>
+</svg>
