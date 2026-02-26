@@ -1,5 +1,7 @@
 # Tutoriel WEDO CEJEF
 
+Projet **CNS** (Centre Numérique CEJEF) — contexte institutionnel et projets liés : voir `~/CNS/CLAUDE.md`.
+
 ## Contexte
 
 Site de tutoriel pour les **collaborateurs du CEJEF** découvrant l'outil collaboratif **WEDO** pour la première fois.
@@ -101,6 +103,6 @@ cejef: {
 
 ## Liens projet
 
-- **Documentation GCN** : `gcn/README.md`
-- **Documentation WEDO** : `projets/wedo.md`
-- **ODJ séance 5 février** : `gcn/pv/GCN 2026 03 - 05-02-2026 - ODJ.md`
+- **Projet parent CNS** : `~/CNS/`
+- **Documentation GCN** : `~/CNS/gcn/README.md`
+- **Documentation WEDO** : `~/CNS/ressources/wedo-api-manuel.md`
